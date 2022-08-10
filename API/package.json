@@ -4,8 +4,17 @@
   "description": "api",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev":"nodemon server.js"
   },
   "author": "Irahe Kasprzykowski",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^2.2.0",
+    "restify": "^8.6.1",
+    "sha1": "^1.1.1",
+    "sqlite3": "^5.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
 }
