@@ -1,14 +1,16 @@
 {
   "name": "mini-collection.api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "api",
   "main": "server.js",
   "scripts": {
-    "dev":"nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "author": "Irahe Kasprzykowski",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.0.1",
+    "joi": "^17.6.0",
     "knex": "^2.2.0",
     "restify": "^8.6.1",
     "sha1": "^1.1.1",
