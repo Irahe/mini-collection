@@ -1,7 +1,8 @@
 const sha1 = require('sha1');
 const errorController = require('./errorController');
 const jwt = require('jsonwebtoken');
-const hasher = require('../util/crc32Hash')
+const hasher = require('../util/crc32Hash');
+const email = require('../util/mailgunEmailController.js');
 
 
 module.exports = {
@@ -64,7 +65,11 @@ module.exports = {
       const new_password = hasher.hash(`${data.name}-${data.email}-${data.password}-${today.getTime()}`, 'crc32');
 
       //send email to user here
-      console.log(new_password);
+      await email.sendEmail(req?.body?.email, "Mini Collection Password Recovery",
+        `
+        <h1> This is your new password to access the app: </h1><br>
+        <b>${new_password}</b>
+      `)
 
       await db('user').where({ id: data?.id }).update({ 'password': sha1(new_password) });
 
