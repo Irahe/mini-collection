@@ -13,6 +13,7 @@ const server = restify.createServer({
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.gzipResponse());
 
 //cria a conexão com o nosso banco de dados
 const db = require('knex')({
