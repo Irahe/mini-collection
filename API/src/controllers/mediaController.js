@@ -1,7 +1,7 @@
 const errorController = require('./errorController');
 const sha1 = require('sha1');
 const fs = require('fs');
-
+const { hashObjectBy } = require('../util/hashMapHelpers');
 const mimes = {
   gif: 'image/gif',
   jpg: 'image/jpeg',
@@ -28,14 +28,29 @@ module.exports = {
     const type = name.split('.')[name.split('.').length - 1]
     const mime = mimes[type];
     if (mime) {
-      const media = fs.readFileSync(`${process.env.STORAGE_PATH}${name}`);
-      res.header('Content-Type', mime);
-      res.writeHead(200);
-      res.write(media);
-      res.end();
+      try {
+        const media = fs.readFileSync(`${process.env.STORAGE_PATH}${name}`);
+        res.header('Content-Type', mime);
+        res.writeHead(200);
+        res.write(media);
+        res.end();
+      } catch (error) {
+        errorController.NotFound(res);
+      }
     } else {
       throw new Error('Unknown mime type')
     }
 
+  },
+  async cleanUpStorage(db) {
+    const dbMedia = hashObjectBy(await db('item').select('picture_file'), 'picture_file');
+    fs.readdirSync(process.env.STORAGE_PATH).forEach(file => {
+      if (!(file in dbMedia) && file !== '.DS_Store') {
+        console.log('Removing -> ', file)
+        this.remove(file)
+      }
+    });
+
+
   }
-}
+} 

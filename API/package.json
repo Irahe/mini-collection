@@ -13,6 +13,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.2.0",
     "mailgun-js": "^0.22.0",
+    "node-cron": "^3.0.2",
     "restify": "^8.6.1",
     "sha1": "^1.1.1",
     "sqlite3": "^5.0.11"

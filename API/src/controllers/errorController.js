@@ -1,6 +1,6 @@
 module.exports = {
   InternalServerError(error, res) {
-    let response = {
+    const response = {
       status: 'fail',
       message: error.message,
       stack: error.stack
@@ -9,23 +9,23 @@ module.exports = {
     res.send(500, response);
   },
   InvalidRequest(message, res) {
-    let response = {
+    const response = {
       status: 'fail',
       message: message,
     }
     res.send(400, response);
   },
   Unauthorized(res) {
-    let response = {
+    const response = {
       status: 'fail',
       message: 'Unauthorized',
     }
     res.send(401, response);
   },
   NotFound(res) {
-    let response = {
+    const response = {
       status: 'fail',
-      message: 'Requested resource coud not be found on server.',
+      message: 'Requested resource could not be found on server.',
     }
     res.send(404, response);
   }

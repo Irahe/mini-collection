@@ -1,7 +1,9 @@
 require('dotenv/config');
 const restify = require('restify');
 const { Database } = require('sqlite3');
-const routeAgregator = require('./src/routes.js');
+const routeAggregator = require('./src/routes.js');
+const cron = require('node-cron');
+const mediaController = require('./src/controllers/mediaController.js');
 
 //cria a instância do servidor restify
 const server = restify.createServer({
@@ -30,4 +32,14 @@ server.listen(process.env.SERVER_PORT, function () {
 });
 
 //importa as rotas unificadas do arquivo routes.js
-routeAgregator({ server, db });
+routeAggregator({ server, db });
+
+//cria agendamento de tarefa para limpar o storage
+cron.schedule('22 22 * * *', async () => {
+  console.log('Running a job at 22:22 at America/Bahia timezone');
+  console.log('Running scheduled storage cleanup.');
+  mediaController.cleanUpStorage(db);
+}, {
+  scheduled: true,
+  timezone: "America/Bahia"
+});

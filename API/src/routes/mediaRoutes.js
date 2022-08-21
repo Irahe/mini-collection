@@ -9,8 +9,6 @@ module.exports = ({ server, db }) => {
       mediaController.upload(req, res, db).catch((error) => {
         errorController.InternalServerError(error, res);
       })
-    } else {
-      errorController.Unauthorized(res);
     }
   });
   server.get('/media/:name', async function (req, res) {

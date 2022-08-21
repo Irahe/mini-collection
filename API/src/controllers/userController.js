@@ -23,7 +23,7 @@ module.exports = {
 
     const user = await db.select('*').from('user').where({ id }).first();
     if (!user) {
-      res.send(errorController.NotFound(res));
+      errorController.NotFound(res);
     } else {
       res.send(200, { status: 'success', data: user });
     }

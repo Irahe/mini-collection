@@ -5,7 +5,7 @@ const sha1 = require('sha1');
 module.exports = {
   async getAll(req, res, db) {
     const userCollections = await db('share').where({ user_id: req?.requester?.id });
-    const collections = await db.select('*').from('collection').whereIn('id', userCollections.map(share => collection_id));
+    const collections = await db.select('*').from('collection').whereIn('id', userCollections.map(share => share?.collection_id));
     res.send(200, { status: 'success', data: collections });
   },
 
@@ -16,8 +16,9 @@ module.exports = {
       errorController.InvalidRequest('Id is required', res);
       return;
     }
-    const canRead = await this.canRead(req?.requester?.id, id, db);
+    const canRead = req?.requester?.role === 'op' || await this.canRead(req?.requester?.id, id, db);
     if (!canRead) {
+      console.log('here')
       errorController.Unauthorized(res);
       return;
     }
@@ -26,7 +27,7 @@ module.exports = {
     const sharing = await db('share').where({ collection_id: id });
 
     if (!collection) {
-      res.send(errorController.NotFound(res));
+      errorController.NotFound(res);
     } else {
       res.send(200, { status: 'success', data: { ...collection, sharing } });
     }
@@ -114,9 +115,14 @@ module.exports = {
       errorController.Unauthorized(res);
       return;
     }
+    const user = await db('user').where({ email: data?.userEmail }).first();
+    if (!user) {
+      errorController.NotFound(res);
+      return;
+    }
 
     await db('share').insert({
-      user_id: data?.userId,
+      user_id: user?.id,
       collection_id: id,
       permission: data?.permission
     });
@@ -144,8 +150,14 @@ module.exports = {
       return;
     }
 
+    const user = await db('user').where({ email: data?.userEmail }).first();
+    if (!user) {
+      errorController.NotFound(res);
+      return;
+    }
+
     await db('share').where({
-      user_id: data?.userId,
+      user_id: user?.id,
       collection_id: id,
     }).del();
 
@@ -154,6 +166,9 @@ module.exports = {
 
   //accessory build
   async canRead(userId, collectionId, db) {
+    if (!collectionId) {
+      return false
+    }
     const sharing = await db('share').where({ collection_id: collectionId });
 
     const canRead = sharing.find(permission => permission?.user_id === userId);
