@@ -12,7 +12,7 @@ module.exports = {
     const { id } = req.params;
 
     if (!id) {
-      errorController.InvalidRequest('You should provide a valid id', res);
+      errorController.InvalidRequest('Id is required', res);
       return;
     }
 
@@ -50,7 +50,8 @@ module.exports = {
     const data = req.body;
     const { id } = data;
     if (!id) {
-      errorController.InvalidRequest('Id is querired', res);
+      errorController.InvalidRequest('Id is required', res);
+      return;
     }
 
     if (req?.requester?.id !== Number(id) && req?.requester?.role !== 'op') {
@@ -74,7 +75,8 @@ module.exports = {
     const { id } = req.params;
 
     if (!id) {
-      errorController.InvalidRequest('Id is querired', res);
+      errorController.InvalidRequest('Id is required', res);
+      return;
     }
 
     if (req?.requester?.id !== Number(id) && req?.requester?.role !== 'op') {
@@ -91,7 +93,8 @@ module.exports = {
   async op(req, res, db) {
     const { id } = req.params;
     if (!id) {
-      errorController.InvalidRequest('Id is querired', res);
+      errorController.InvalidRequest('Id is required', res);
+      return;
     }
 
     await db('user').where({ id }).update({ role: 'op' });

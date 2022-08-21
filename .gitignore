@@ -113,3 +113,6 @@ dist
 #DS Store
 .DS_store
 */.DS_store
+
+#local image storage
+/API/storage/*

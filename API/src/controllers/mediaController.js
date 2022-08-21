@@ -2,6 +2,14 @@ const errorController = require('./errorController');
 const sha1 = require('sha1');
 const fs = require('fs');
 
+const mimes = {
+  gif: 'image/gif',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  svg: 'image/svg+xml',
+};
+
 module.exports = {
   async upload(req, res, db) {
     const { name: filename, path: location } = req.files.file;
@@ -15,4 +23,19 @@ module.exports = {
   async remove(fileName) {
     await fs.unlink(`${process.env.STORAGE_PATH}${fileName}`, (error) => { if (error) { console.log(error) } });
   },
+  async get(req, res) {
+    const { name } = req?.params
+    const type = name.split('.')[name.split('.').length - 1]
+    const mime = mimes[type];
+    if (mime) {
+      const media = fs.readFileSync(`${process.env.STORAGE_PATH}${name}`);
+      res.header('Content-Type', mime);
+      res.writeHead(200);
+      res.write(media);
+      res.end();
+    } else {
+      throw new Error('Unknown mime type')
+    }
+
+  }
 }

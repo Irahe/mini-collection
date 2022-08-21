@@ -13,4 +13,9 @@ module.exports = ({ server, db }) => {
       errorController.Unauthorized(res);
     }
   });
+  server.get('/media/:name', async function (req, res) {
+    mediaController.get(req, res, db).catch((error) => {
+      errorController.InternalServerError(error, res);
+    })
+  });
 }
